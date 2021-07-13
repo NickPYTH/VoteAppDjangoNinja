@@ -25,7 +25,7 @@ SECRET_KEY = '#5cw$8dtk7u&$w9_^n3qri7pvg)7=(szb**+rzs0k=d@#3@!8w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['188.225.83.42', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'create_vote',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'VoteAppDN.urls'
@@ -69,14 +73,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'VoteAppDN.wsgi.application'
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://polka.tplinkdns.com:3000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
+
+CORS_ORIGIN_WHITELIST = (
+    "http://polka.tplinkdns.com:3000/",
+    "http://localhost:3000/",
+    "http://127.0.0.1:3000/"
+)
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        "NAME": "vote_app",
+        "USER": 'postgres',
+        "PASSWORD": 'lj,hjtenhj!',
+        "HOST": '188.225.83.42',
+        "PORT": "8355",
     }
 }
 
