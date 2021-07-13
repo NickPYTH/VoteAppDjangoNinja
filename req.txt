@@ -1,2 +1,4 @@
 django
 django-ninja
+django-cors-headers
+psycopg2
