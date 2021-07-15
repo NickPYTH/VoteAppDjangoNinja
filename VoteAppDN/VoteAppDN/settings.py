@@ -101,6 +101,11 @@ DATABASES = {
     }
 }
 
+LANGUAGE_CODE = 'ru-ru'
+
+TIME_ZONE = 'Europe/Istanbul'
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 4621440
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
