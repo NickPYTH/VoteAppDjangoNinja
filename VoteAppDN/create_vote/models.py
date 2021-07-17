@@ -65,7 +65,7 @@ class SubAnswer(models.Model):
     uniq_key = models.CharField(max_length=20)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     value = models.CharField(
-        max_length=30,
+        max_length=300,
         verbose_name="Связанный ответ",)
 
 class Answer(models.Model):
