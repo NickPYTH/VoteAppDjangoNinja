@@ -31,7 +31,7 @@ def add(request):
         form = Form(form_name=form_name, form_password=form_password, form_end_date=form_end_date)
     else:
         form = Form(form_name=form_name, form_password=form_password)
-    form.save()
+    #form.save()
     
     for el in body['questions']:
         question_number = el['questionNumber']
@@ -45,13 +45,13 @@ def add(request):
         key = random.randint(0, 1000000)
         question = Question(uniq_key=key, question_type=question_type, form=form, question_name=question_title, question_description=question_description,
                             question_comment=question_comment)
-        question.save()
+        #question.save()
         if question_type == 'numbers':
             pass
         elif question_type == 'custom':
             for el in question_data:
                 sub_ans = SubAnswer(uniq_key=key, value=el, question=question)
-                sub_ans.save()
+                #sub_ans.save()
         elif question_type == 'group':
             pass
 
