@@ -2,9 +2,6 @@ from django.db import models
 from django.core import validators
 
 
-class QuestionType(models.Model):
-    question_type = models.CharField(max_length=20, verbose_name="Наименование вопроса")
-
 class Form(models.Model):
     form_name = models.CharField(
         max_length=300,
@@ -26,6 +23,11 @@ class Form(models.Model):
             ),
         ],
         verbose_name="Пароль к результатам",
+    )
+    form_link = models.CharField(
+        max_length=300,
+        unique=True,
+        verbose_name="Ссылка",
     )
     form_end_date = models.DateTimeField(
         null=True, blank=True, verbose_name="Дата окончания жизни формы"
@@ -61,12 +63,8 @@ class Question(models.Model):
     )
     question_comment = models.BooleanField(verbose_name="Наличие комментария", default=False)
 
-class SubAnswer(models.Model):
-    uniq_key = models.CharField(max_length=20)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    value = models.CharField(
-        max_length=300,
-        verbose_name="Связанный ответ",)
+    def __str__(self):
+        return "{0} | {1}".format(self.form.form_name, self.question_name)
 
 class Answer(models.Model):
     uniq_key = models.CharField(max_length=20)
@@ -77,8 +75,8 @@ class Answer(models.Model):
     answer = models.CharField(
         max_length=40,
         verbose_name="Ответ")
-    sub_answer = models.ManyToManyField(
-        SubAnswer, 
-        verbose_name="Связанные ответы",
-        null=True,
-        blank=True)
+    group = models.CharField(
+        max_length=40,
+        verbose_name="Группа",
+        blank=True,
+        null=True)
