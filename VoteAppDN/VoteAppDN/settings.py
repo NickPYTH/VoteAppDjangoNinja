@@ -93,7 +93,7 @@ CORS_ORIGIN_WHITELIST = (
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        "NAME": "vote_app",
+        "NAME": "voteapp",
         "USER": 'postgres',
         "PASSWORD": 'lj,hjtenhj!',
         "HOST": '188.225.83.42',
