@@ -24,6 +24,8 @@ def add(request):
                 "group": answer.group,
             })
         question_and_answers["question_name"] = question.question_name
+        question_and_answers["question_description"] = question.question_description
+        question_and_answers["question_comment"] = question.question_comment
         question_and_answers["question_type"] = question.question_type
         question_and_answers["answers"] = answers_list
         data.append(question_and_answers)
