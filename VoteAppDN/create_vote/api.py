@@ -1,3 +1,4 @@
+from django.utils.regex_helper import Group
 from ninja import NinjaAPI
 from .models import Form, Question, Answer 
 import json
@@ -9,7 +10,28 @@ def add(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
     form_key = body['form_key']
-    return form_key
+    form = Form.objects.filter(uniq_key=form_key).first()
+    questions = Question.objects.filter(form=form)
+    data = []
+    for question in questions:
+        question_and_answers = {}
+        answers = Answer.objects.filter(question=question)
+        answers_list = []
+        for answer in answers:
+            answers_list.append({
+                "question": question.question_name,
+                "answer": answer.answer,
+                "group": answer.group,
+            })
+        question_and_answers["question_name"] = question.question_name
+        question_and_answers["question_type"] = question.question_type
+        question_and_answers["answers"] = answers_list
+        data.append(question_and_answers)
+    for el in data:
+        print(el)
+
+    
+    return json.dumps(data)
 
 
 @api.post("create_form")
@@ -40,7 +62,7 @@ def add(request):
     if form_end_date != "inf":
         form = Form(uniq_key=link_to_vote, form_name=form_name, form_password=form_password, form_end_date=form_end_date, form_link=link_to_vote)
     else:
-        form = Form(form_name=form_name, form_password=form_password, form_link=link_to_vote)
+        form = Form(uniq_key=link_to_vote, form_name=form_name, form_password=form_password, form_link=link_to_vote)
     form.save()
     try:
         for el in questions:
