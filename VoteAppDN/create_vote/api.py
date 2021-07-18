@@ -33,9 +33,9 @@ def add(request):
         form = Form(uniq_key=link_to_vote, form_name=form_name, form_password=form_password, form_end_date=form_end_date, form_link=link_to_vote)
     else:
         form = Form(form_name=form_name, form_password=form_password, form_link=link_to_vote)
-    #form.save()
+    form.save()
     try:
-        for el in body['questions']:
+        for el in questions:
             question_number = el['questionNumber']
             question_title = el['question_title']
             question_description = el['question_description']
