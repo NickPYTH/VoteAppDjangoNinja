@@ -30,10 +30,10 @@ def add(request):
     link_to_vote = random.randint(100, 10000000000)
 
     if form_end_date != "inf":
-        form = Form(form_name=form_name, form_password=form_password, form_end_date=form_end_date)
+        form = Form(uniq_key=link_to_vote, form_name=form_name, form_password=form_password, form_end_date=form_end_date, form_link=link_to_vote)
     else:
-        form = Form(form_name=form_name, form_password=form_password)
-    
+        form = Form(form_name=form_name, form_password=form_password, form_link=link_to_vote)
+    #form.save()
     try:
         for el in body['questions']:
             question_number = el['questionNumber']
@@ -59,8 +59,10 @@ def add(request):
                     for ell in el["data"]:
                         answer = Answer(uniq_key=key, question=question, answer=ell["value"], group=ell["group_name"])
                         answer.save()
-            form.save()
+            
     except:
         return "some error"
 
-    return body['questions']
+    return {
+        "link": link_to_vote,
+    }

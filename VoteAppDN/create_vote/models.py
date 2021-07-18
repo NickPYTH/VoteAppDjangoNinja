@@ -3,6 +3,7 @@ from django.core import validators
 
 
 class Form(models.Model):
+    uniq_key = models.CharField(max_length=20)
     form_name = models.CharField(
         max_length=300,
         validators=[
