@@ -4,6 +4,14 @@ import json
 import random
 api = NinjaAPI()
 
+@api.post("get_form")
+def add(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    form_key = body['form_key']
+    return form_key
+
+
 @api.post("create_form")
 def add(request):
     body_unicode = request.body.decode('utf-8')
