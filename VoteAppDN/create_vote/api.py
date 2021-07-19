@@ -5,6 +5,13 @@ import json
 import random
 api = NinjaAPI()
 
+@api.post("send_form")
+def send(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    print(body)
+    return 1
+
 @api.post("get_form")
 def add(request):
     body_unicode = request.body.decode('utf-8')
@@ -23,6 +30,8 @@ def add(request):
                 "answer": answer.answer,
                 "group": answer.group,
             })
+        question_and_answers["form_name"] = form.form_name
+        question_and_answers["date"] = str(form.form_end_date)
         question_and_answers["question_name"] = question.question_name
         question_and_answers["question_description"] = question.question_description
         question_and_answers["question_comment"] = question.question_comment
