@@ -81,3 +81,15 @@ class Answer(models.Model):
         verbose_name="Группа",
         blank=True,
         null=True)
+
+class SendedForm(models.Model):
+    form_key = models.CharField(max_length=50, verbose_name="Ключ формы")
+    question = models.CharField(max_length=50, verbose_name="Вопрос")
+    answer = models.CharField(max_length=50, verbose_name="Ответ")
+    date = models.DateTimeField(auto_now_add=True, editable=False)
+
+class SendedComments(models.Model):
+    form_key = models.CharField(max_length=50, verbose_name="Ключ формы")
+    question = models.CharField(max_length=50, verbose_name="Вопрос")
+    comment = models.CharField(max_length=50, verbose_name="Комментарий")
+    date = models.DateTimeField(auto_now_add=True, editable=False)

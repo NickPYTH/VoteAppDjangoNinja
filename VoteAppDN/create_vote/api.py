@@ -1,16 +1,54 @@
 from django.utils.regex_helper import Group
 from ninja import NinjaAPI
-from .models import Form, Question, Answer 
+from .models import Form, Question, Answer, SendedForm, SendedComments
 import json
 import random
 api = NinjaAPI()
+
+@api.post("get_form_public_results")
+def get_public_results(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    form_key = body['form_key']
+
+    sended_forms = SendedForm.objects.filter(form_key=form_key)
+    questions_short = []
+    questions=[]
+    for sf in sended_forms:
+        if sf.question not in questions_short:
+            questions_short.append(sf.question)
+            questions.append({"question":sf.question, "answers":[]})
+    for question in questions:
+        for sf in sended_forms:
+            if sf.question == question["question"]:
+                question["answers"].append(sf.answer)
+
+    sended_comments = SendedComments.objects.filter(form_key=form_key)
+    comments_short = []
+    comments=[]
+    for sc in sended_comments:
+        if sc.question not in comments_short:
+            comments_short.append(sc.question)
+            comments.append({"question":sc.question, "comments":[]})
+    for question in comments:
+        for sc in sended_comments:
+            if sc.question == question["question"]:
+                question["comments"].append(sc.comment)
+
+    return {"questions": questions, "comments": comments, "just_questions": questions_short}
 
 @api.post("send_form")
 def send(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
-    print(body)
-    return 1
+    answers = body['answers']
+    comments = body['comments']
+    form_key = body['form_key']
+    for answer in answers:
+        SendedForm(form_key=form_key , question=answer, answer=answers[answer]).save()   
+    for comment in comments:
+        SendedComments(form_key=form_key , question=comment, comment=comments[comment]).save()
+    return "Success"
 
 @api.post("get_form")
 def add(request):
@@ -38,8 +76,6 @@ def add(request):
         question_and_answers["question_type"] = question.question_type
         question_and_answers["answers"] = answers_list
         data.append(question_and_answers)
-    for el in data:
-        print(el)
 
     
     return json.dumps(data)
