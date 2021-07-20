@@ -25,7 +25,7 @@ SECRET_KEY = '#5cw$8dtk7u&$w9_^n3qri7pvg)7=(szb**+rzs0k=d@#3@!8w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['188.225.83.42', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['188.225.83.42', '127.0.0.1', 'localhost', 'anketa-pvi.ru']
 
 
 # Application definition
@@ -78,13 +78,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     "http://polka.tplinkdns.com:3000",
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    "http://188.225.83.42:3000",
+    "http://anketa-pvi.ru",
+
 ]
 
 CORS_ORIGIN_WHITELIST = (
     "http://polka.tplinkdns.com:3000/",
     "http://localhost:3000/",
-    "http://127.0.0.1:3000/"
+    "http://127.0.0.1:3000/",
+    "http://188.225.83.42:3000",
+    "http://anketa-pvi.ru/",
 )
 
 # Database
@@ -144,3 +149,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
