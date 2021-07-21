@@ -5,6 +5,65 @@ import json
 import random
 api = NinjaAPI()
 
+@api.post("login_private_stats")
+def get_public_results(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    form_name = body['form_name']
+    password = body['password']
+
+    try:
+        form = Form.objects.get(form_name=form_name, form_password=password)
+        return form.uniq_key
+    except:
+        return "Failed"
+
+
+@api.post("get_form_private_results")
+def get_public_results(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    form_key = body['form_key']
+
+    sended_forms = SendedForm.objects.filter(form_key=form_key)
+    questions_short = []
+    questions=[]
+    for sf in sended_forms:
+        if sf.question not in questions_short:
+            questions_short.append(sf.question)
+            questions.append({"question":sf.question, "answers":[]})
+    for question in questions:
+        for sf in sended_forms:
+            if sf.question == question["question"]:
+                question["answers"].append(sf.answer)
+
+    sended_comments = SendedComments.objects.filter(form_key=form_key)
+    comments_short = []
+    comments=[]
+    for sc in sended_comments:
+        if sc.question not in comments_short:
+            comments_short.append(sc.question)
+            comments.append({"question":sc.question, "comments":[]})
+    for question in comments:
+        for sc in sended_comments:
+            if sc.question == question["question"]:
+                question["comments"].append(sc.comment)
+    
+    to_excel = []
+    for question in questions:
+        for answer in question["answers"]:
+           date = SendedForm.objects.filter(form_key=form_key, question=question["question"], answer=answer)[0].date
+           group = Answer.objects.filter(
+               #question=Question.objects.get (question_name=question["question"]), 
+               answer=answer)[0].group
+           print(group)
+
+    return {
+            "questions": questions, 
+            "comments": comments, 
+            "just_questions": questions_short, 
+            }
+
 @api.post("get_form_public_results")
 def get_public_results(request):
     body_unicode = request.body.decode('utf-8')
