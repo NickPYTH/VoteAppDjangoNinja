@@ -3,7 +3,35 @@ from ninja import NinjaAPI
 from .models import Form, Question, Answer, SendedForm, SendedComments
 import json
 import random
+import pandas as pd
+from django.http import FileResponse
+from minio import Minio
+
 api = NinjaAPI()
+
+@api.post("download_stats")
+def get_stat(request):
+
+    client = Minio("188.225.83.42:9000", "nick", "kolia27062000!", secure=False)
+
+    if client.bucket_exists("voteapp"):
+        print("my-bucket exists")
+        client.fput_object("voteapp", "my-object.xlsx", "output.xlsx")
+    else:
+        print("my-bucket does not exist")
+
+
+    '''body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    form_name = body['form_name']
+    password = body['password']
+    try:
+        form = Form.objects.get(form_name=form_name, form_password=password)
+        return form.uniq_key
+    except:
+        return "Failed"'''
+    
+
 
 @api.post("login_private_stats")
 def get_public_results(request):
@@ -52,16 +80,32 @@ def get_public_results(request):
     to_excel = []
     for question in questions:
         for answer in question["answers"]:
-           date = SendedForm.objects.filter(form_key=form_key, question=question["question"], answer=answer)[0].date
-           group = Answer.objects.filter(
-               #question=Question.objects.get (question_name=question["question"]), 
-               answer=answer)[0].group
-           print(group)
+            date_full = SendedForm.objects.filter(form_key=form_key, question=question["question"], answer=answer)[0].date
+            date = date_full.date()
+            time = str(date_full.time())[:-7]
+            ans_model = Answer.objects.filter(
+               question=Question.objects.get(question_name=question["question"]), 
+               answer=answer)
+            group = None
+            if len(ans_model) != 0:
+                group = ans_model[0].group
+            to_excel.append([question["question"], answer, group, date, time])
+    
+    df = pd.DataFrame(to_excel)
+    with pd.ExcelWriter('output.xlsx') as writer:  
+        df.to_excel(writer, sheet_name='Ответы')
+
+    client = Minio("188.225.83.42:9000", "nick", "kolia27062000!", secure=False)
+
+    file_name = random.randint(7000, 199320323233)
+    if client.bucket_exists("voteapp"):
+        client.fput_object("voteapp", str(file_name)+".xlsx", "output.xlsx")
 
     return {
             "questions": questions, 
             "comments": comments, 
-            "just_questions": questions_short, 
+            "just_questions": questions_short,
+            "file_link": "http://188.225.83.42:9000/voteapp/"+ str(file_name) +".xlsx"
             }
 
 @api.post("get_form_public_results")
