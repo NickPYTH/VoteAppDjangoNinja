@@ -8,30 +8,7 @@ from django.http import FileResponse
 from minio import Minio
 
 api = NinjaAPI()
-
-@api.post("download_stats")
-def get_stat(request):
-
-    client = Minio("188.225.83.42:9000", "nick", "kolia27062000!", secure=False)
-
-    if client.bucket_exists("voteapp"):
-        print("my-bucket exists")
-        client.fput_object("voteapp", "my-object.xlsx", "output.xlsx")
-    else:
-        print("my-bucket does not exist")
-
-
-    '''body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    form_name = body['form_name']
-    password = body['password']
-    try:
-        form = Form.objects.get(form_name=form_name, form_password=password)
-        return form.uniq_key
-    except:
-        return "Failed"'''
     
-
 
 @api.post("login_private_stats")
 def get_public_results(request):
@@ -214,34 +191,32 @@ def add(request):
     else:
         form = Form(uniq_key=link_to_vote, form_name=form_name, form_password=form_password, form_link=link_to_vote)
     form.save()
-    try:
-        for el in questions:
-            question_number = el['questionNumber']
-            question_title = el['question_title']
-            question_description = el['question_description']
-            question_comment = el['isComment']
-            question_type = el['title']
-            question_id = el['id']
-            question_data = el['data']
+    
+    for el in questions:
+        question_number = el['questionNumber']
+        question_title = el['question_title']
+        question_description = el['question_description']
+        question_comment = el['isComment']
+        question_type = el['title']
+        question_id = el['id']
+        question_data = el['data']
 
-            key = random.randint(0, 1000000)
-            question = Question(uniq_key=key, question_type=question_type, form=form, question_name=question_title, question_description=question_description,
+        key = random.randint(0, 1000000)
+        question = Question(uniq_key=key, question_type=question_type, form=form, question_name=question_title, question_description=question_description,
                                 question_comment=question_comment)
-            question.save()
-            if question_type == 'numbers':
-                pass
-            elif question_type == 'custom':
-                for ell in question_data:
-                    answer = Answer(uniq_key=key, question=question, answer=ell)
+        question.save()
+        if question_type == 'numbers':
+            pass
+        elif question_type == 'custom':
+            for ell in question_data:
+                answer = Answer(uniq_key=key, question=question, answer=ell)
+                answer.save()
+        elif question_type == 'group':
+            if len(el["data"]) != 0:
+                for ell in el["data"]:
+                    answer = Answer(uniq_key=key, question=question, answer=ell["value"], group=ell["group_name"])
                     answer.save()
-            elif question_type == 'group':
-                if len(el["data"]) != 0:
-                    for ell in el["data"]:
-                        answer = Answer(uniq_key=key, question=question, answer=ell["value"], group=ell["group_name"])
-                        answer.save()
-            
-    except:
-        return "some error"
+        
 
     return {
         "link": link_to_vote,
