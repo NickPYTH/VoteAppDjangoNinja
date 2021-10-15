@@ -25,7 +25,7 @@ SECRET_KEY = '#5cw$8dtk7u&$w9_^n3qri7pvg)7=(szb**+rzs0k=d@#3@!8w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['188.225.83.42', '127.0.0.1', 'localhost', 'anketa-pvi.ru']
+ALLOWED_HOSTS = ['176.57.217.201', '127.0.0.1', 'localhost', 'anketa-pvi.ru']
 
 
 # Application definition
@@ -98,11 +98,11 @@ CORS_ORIGIN_WHITELIST = (
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        "NAME": "voteapp",
-        "USER": 'postgres',
-        "PASSWORD": 'lj,hjtenhj!',
-        "HOST": '188.225.83.42',
-        "PORT": "8355",
+        "NAME": "default_db",
+        "USER": 'gen_user',
+        "PASSWORD": 'b6xw16w5c',
+        "HOST": '92.53.119.230',
+        "PORT": "5432",
     }
 }
 
