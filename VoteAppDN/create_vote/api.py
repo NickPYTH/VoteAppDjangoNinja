@@ -72,7 +72,7 @@ def get_public_results(request):
     with pd.ExcelWriter('output.xlsx') as writer:  
         df.to_excel(writer, sheet_name='Ответы')
 
-    client = Minio("188.225.83.42:9000", "nick", "kolia27062000!", secure=False)
+    client = Minio("176.57.217.201:9000", "minioadmin", "minioadmin", secure=False)
 
     file_name = random.randint(7000, 199320323233)
     if client.bucket_exists("voteapp"):
@@ -82,7 +82,7 @@ def get_public_results(request):
             "questions": questions, 
             "comments": comments, 
             "just_questions": questions_short,
-            "file_link": "http://188.225.83.42:9000/voteapp/"+ str(file_name) +".xlsx"
+            "file_link": "http://176.57.217.201:9000/voteapp/"+ str(file_name) +".xlsx"
             }
 
 @api.post("get_form_public_results")
