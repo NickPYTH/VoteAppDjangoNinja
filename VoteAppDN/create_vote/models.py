@@ -2,91 +2,78 @@ from django.db import models
 from django.core import validators
 
 
-class Form(models.Model):
-    uniq_key = models.CharField(max_length=20)
-    form_name = models.CharField(
-        max_length=300,
-        validators=[
-            validators.MinLengthValidator(3, message="Слишком короткое имя формы"),
-            validators.MaxLengthValidator(500, message="Слишком длинное имя формы"),
-        ],
-        unique=True,
-        verbose_name="Название формы",
-    )
-    form_password = models.CharField(
-        max_length=20,
-        validators=[
-            validators.MinLengthValidator(
-                4, message="Слишком короткий пароль к результатам"
-            ),
-        ],
-        verbose_name="Пароль к результатам",
-    )
-    form_link = models.CharField(
-        max_length=300,
-        unique=True,
-        verbose_name="Ссылка",
-    )
-    form_end_date = models.DateTimeField(
-        null=True, blank=True, verbose_name="Дата окончания жизни формы"
-    )
-    form_created_date = models.DateTimeField(
-        verbose_name="Дата создания формы", auto_now_add=True
-    )
-
-class Question(models.Model):
-    uniq_key = models.CharField(max_length=20)
-    question_type = models.CharField(verbose_name="Тип вопроса", max_length=20)
-    form = models.ForeignKey(Form, on_delete=models.CASCADE)
-    question_name = models.CharField(
-        max_length=500,
-        validators=[
-            validators.MinLengthValidator(
-                4, message="Слишком короткий заголвок вопроса"
-            ),
-            validators.MaxLengthValidator(
-                500, message="Слишком длинный заголовок вопроса"
-            ),
-        ],
-        verbose_name="Заголовок вопроса",
-    )
-    question_description = models.CharField(
-        max_length=500,
-        validators=[
-            validators.MaxLengthValidator(
-                500, message="Слишком длинное описание вопроса"
-            ),
-        ],
-        verbose_name="Описание вопроса",
-    )
-    question_comment = models.BooleanField(verbose_name="Наличие комментария", default=False)
+class TypesTable(models.Model):
+    type = models.CharField(max_length=20)
 
     def __str__(self):
-        return "{0} | {1}".format(self.form.form_name, self.question_name)
+        return self.type
 
-class Answer(models.Model):
-    uniq_key = models.CharField(max_length=20)
-    question = models.ForeignKey(
-        Question, 
-        on_delete=models.CASCADE,
-        verbose_name="Вопрос")
-    answer = models.CharField(
-        max_length=500,
-        verbose_name="Ответ")
-    group = models.CharField(
-        max_length=500,
-        verbose_name="Группа",
-        blank=True,
-        null=True)
 
-class SendedForm(models.Model):
-    form_key = models.CharField(max_length=50, verbose_name="Ключ формы")
-    question = models.CharField(max_length=500, verbose_name="Вопрос")
-    answer = models.CharField(max_length=500, verbose_name="Ответ")
-    date = models.DateTimeField(auto_now_add=True, editable=False)
+class AnswersTable(models.Model):
+    value = models.CharField(max_length=200, blank=True, null=False)
 
-class SendedComments(models.Model):
-    form_key = models.CharField(max_length=50, verbose_name="Ключ формы")
-    question = models.CharField(max_length=500, verbose_name="Вопрос")
-    comment = models.CharField(max_length=1000, verbose_name="Комментарий")
-    date = models.DateTimeField(auto_now_add=True, editable=False)
+    def __str__(self):
+        return self.value
+
+
+class GroupsTable(models.Model):
+    name = models.CharField(max_length=200, blank=True, null=False)
+    answers = models.ManyToManyField(AnswersTable)
+
+    def __str__(self):
+        return self.name
+
+
+class QuestionTable(models.Model):
+    name = models.CharField(max_length=200, blank=True, null=False)
+    description = models.CharField(max_length=500, blank=False, null=False)
+    serial_number = models.IntegerField(blank=False, null=False)
+    type = models.ForeignKey(TypesTable, on_delete=models.DO_NOTHING)
+    is_comment = models.BooleanField(blank=False, null=True, default=False)
+    range = models.IntegerField(blank=True, null=True)
+    answers = models.ManyToManyField(AnswersTable)
+    groups = models.ManyToManyField(GroupsTable)
+
+    def __str__(self):
+        return self.name
+
+
+class FormTable(models.Model):
+    name = models.CharField(max_length=200, blank=True, null=False)
+    password = models.CharField(max_length=200, blank=True, null=False)
+    description = models.CharField(max_length=500, blank=False, null=False)
+    is_inf = models.BooleanField(blank=False, null=True)
+    start_date = models.DateField(blank=False, null=True)
+    end_date = models.DateField(blank=False, null=True)
+    questions = models.ManyToManyField(QuestionTable)
+    enter_code = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+
+class SendAnswerTable(models.Model):
+    question = models.ForeignKey(QuestionTable, on_delete=models.DO_NOTHING)
+    group = models.ForeignKey(GroupsTable, on_delete=models.DO_NOTHING, blank=True, null=True)
+    answer = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.question.name
+
+
+class SendFormTable(models.Model):
+    form = models.ForeignKey(FormTable, on_delete=models.DO_NOTHING)
+    data = models.DateTimeField(auto_now=True)
+    answers = models.ManyToManyField(SendAnswerTable)
+
+    def __str__(self):
+        return self.form.name
+
+
+class SendFormCommentsTable(models.Model):
+    form = models.ForeignKey(SendFormTable, on_delete=models.DO_NOTHING)
+    question = models.ForeignKey(QuestionTable, on_delete=models.DO_NOTHING)
+    value = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.value

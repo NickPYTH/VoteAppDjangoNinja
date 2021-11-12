@@ -1,27 +1,41 @@
 from django.contrib import admin
-from .models import Form, Question, Answer, SendedForm, SendedComments
+from .models import *
 
-@admin.register(Form)
+
+@admin.register(FormTable)
 class FormAdmin(admin.ModelAdmin):
-    list_display = ("form_name", "form_password", "form_end_date", "form_created_date")
-    list_filter  = ("form_name", "form_password", "form_end_date", "form_created_date")
+    pass
+    #  list_display = ("form_name", "form_password", "form_end_date", "form_created_date")
+    #  list_filter = ("form_name", "form_password", "form_end_date", "form_created_date")
 
-@admin.register(Question)
+
+@admin.register(QuestionTable)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("question_type", "question_name", "question_description")
-    list_filter  = ("question_type", "question_name", "question_description")
+    pass
 
-@admin.register(Answer)
+
+@admin.register(TypesTable)
+class TypeAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(AnswersTable)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ("question", "group", "answer",)
-    list_filter  = ("question", "answer", "group",)
+    pass
 
-@admin.register(SendedForm)
-class SendedFormAdmin(admin.ModelAdmin):
-    list_display = ("form_key", "question", "answer", "date")
-    list_filter  = ("form_key", "question", "answer",)
 
-@admin.register(SendedComments)
-class SendedCommentsAdmin(admin.ModelAdmin):
-    list_display = ("form_key", "question", "comment", "date")
-    list_filter  = ("form_key", "question", "comment",)
+@admin.register(GroupsTable)
+class GroupAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(SendFormTable)
+class SendFormAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(SendFormCommentsTable)
+class SendFormCommentsAdmin(admin.ModelAdmin):
+    pass
+
+

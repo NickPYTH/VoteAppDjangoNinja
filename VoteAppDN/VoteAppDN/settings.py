@@ -95,7 +95,7 @@ CORS_ORIGIN_WHITELIST = (
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         "NAME": "default_db",
@@ -103,6 +103,13 @@ DATABASES = {
         "PASSWORD": 'b6xw16w5c',
         "HOST": '92.53.119.230',
         "PORT": "5432",
+    }
+}'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'default_db',
     }
 }
 
