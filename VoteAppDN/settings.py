@@ -53,6 +53,37 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://polka.tplinkdns.com:3000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'referer',
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 ROOT_URLCONF = 'VoteAppDN.urls'
 
 TEMPLATES = [
@@ -76,42 +107,36 @@ WSGI_APPLICATION = 'VoteAppDN.wsgi.application'
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://polka.tplinkdns.com:3000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://188.225.83.42:3000",
-    "http://anketa-pvi.ru",
-
 ]
 
 CORS_ORIGIN_WHITELIST = (
-    "http://polka.tplinkdns.com:3000/",
     "http://localhost:3000/",
     "http://127.0.0.1:3000/",
-    "http://188.225.83.42:3000",
-    "http://anketa-pvi.ru/",
 )
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-'''DATABASES = {
+DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        "NAME": "default_db",
-        "USER": 'gen_user',
-        "PASSWORD": 'b6xw16w5c',
-        "HOST": '92.53.119.230',
+        "NAME": "hello_django_prod",
+        "USER": 'hello_django',
+        "PASSWORD": 'hello_django',
+        "HOST": 'db',
         "PORT": "5432",
     }
-}'''
+}
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'default_db',
     }
-}
+}'''
 
 LANGUAGE_CODE = 'ru-ru'
 
@@ -157,3 +182,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
